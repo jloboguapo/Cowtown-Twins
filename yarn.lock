@@ -497,7 +497,6 @@ __metadata:
     eslint: ^8.21.0
     eslint-config-universe: ^11.1.0
     jsdom: ^20.0.0
-    lodash.isempty: ^4.4.0
     node-fetch: ^3.2.10
     node-schedule: ^2.1.0
     prettier: ^2.7.1
@@ -1772,13 +1771,6 @@ __metadata:
   dependencies:
     p-locate: ^5.0.0
   checksum: 72eb661788a0368c099a184c59d2fee760b3831c9c1c33955e8a19ae4a21b4116e53fa736dc086cdeb9fce9f7cc508f2f92d2d3aae516f133e16a2bb59a39f5a
-  languageName: node
-  linkType: hard
-
-"lodash.isempty@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "lodash.isempty@npm:4.4.0"
-  checksum: a8118f23f7ed72a1dbd176bf27f297d1e71aa1926288449cb8f7cef99ba1bc7527eab52fe7899ab080fa1dc150aba6e4a6367bf49fa4e0b78da1ecc095f8d8c5
   languageName: node
   linkType: hard
 
