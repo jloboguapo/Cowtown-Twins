@@ -15,11 +15,21 @@ const callMyCowtownBoys = async () => {
   const data = await response.text();
   const dom = new JSDOM(data);
 
-  const productNames = Array.from(
+  const productNamesIncludingTwin = Array.from(
     dom.window.document.querySelectorAll('.product-shortname')
   )
     .filter(name => name.innerHTML.toLowerCase().includes('twin'))
     .map(name => name.innerHTML);
+
+  const productNamesIncludingHunny = Array.from(
+    dom.window.document.querySelectorAll('.product-shortname')
+  )
+    .filter(name => name.innerHTML.toLowerCase().includes('hunny'))
+    .map(name => name.innerHTML);
+
+  const productNames = Array.from(
+    productNamesIncludingTwin.concat(productNamesIncludingHunny)
+  );
 
   const joinedDecks =
     productNames && productNames.length > 2
@@ -38,6 +48,6 @@ const callMyCowtownBoys = async () => {
   productNames.length && sgMail.send(msg);
 };
 
-const job = schedule.scheduleJob('0 10 * * *', () => {
+const job = schedule.scheduleJob('0 1 * * *', () => {
   callMyCowtownBoys();
 });
