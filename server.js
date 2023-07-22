@@ -15,17 +15,13 @@ const callMyCowtownBoys = async () => {
   const data = await response.text();
   const dom = new JSDOM(data);
 
-  const productNamesIncludingTwin = Array.from(
-    dom.window.document.querySelectorAll('.product-shortname')
-  )
-    .filter(name => name.innerHTML.toLowerCase().includes('twin'))
-    .map(name => name.innerHTML);
+  const getProductNames = shortnames =>
+    Array.from(dom.window.document.querySelectorAll('.product-shortname'))
+      .filter(name => name.innerHTML.toLowerCase().includes(shortnames))
+      .map(name => name.innerHTML);
 
-  const productNamesIncludingHunny = Array.from(
-    dom.window.document.querySelectorAll('.product-shortname')
-  )
-    .filter(name => name.innerHTML.toLowerCase().includes('hunny'))
-    .map(name => name.innerHTML);
+  const productNamesIncludingTwin = getProductNames('twin');
+  const productNamesIncludingHunny = getProductNames('hunny');
 
   const productNames = Array.from(
     productNamesIncludingTwin.concat(productNamesIncludingHunny)
