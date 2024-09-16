@@ -1,6 +1,9 @@
 .editorconfig
 .env
+failsafeTwilio
 node_modules/
+package-lock.json
+.yarnrc.yml
 .yarn/*
 !.yarn/patches
 !.yarn/plugins

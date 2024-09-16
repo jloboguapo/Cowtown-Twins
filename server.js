@@ -10,38 +10,37 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const callMyCowtownBoys = async () => {
   const response = await fetch(
-    'https://www.cowtownskateboards.com/skateboarding/decks-cid-90?viewall=1'
+    'https://www.cowtownskateboards.com/shoes/mens-cid-10?Start=17&viewall=1&SortBy=PriceL&Brand=Show%20All%20Brands&Size=12'
   );
   const data = await response.text();
   const dom = new JSDOM(data);
 
-  const getProductNames = shortnames =>
-    Array.from(dom.window.document.querySelectorAll('.product-shortname'))
-      .filter(name => name.innerHTML.toLowerCase().includes(shortnames))
-      .map(name => name.innerHTML);
+  const getDeals = priceRange =>
+    Array.from(
+      dom.window.document.querySelectorAll('.product-description > .price')
+    )
+      .filter(price => price.innerHTML.match(priceRange))
+      .map(price => price.parentElement.textContent);
 
-  const productNamesIncludingTwin = getProductNames('twin');
-  const productNamesIncludingHunny = getProductNames('hunny');
+  const shoes = getDeals(/\n\$[0123].\.../);
 
-  const productNames = Array.from(
-    productNamesIncludingTwin.concat(productNamesIncludingHunny)
-  );
+  const joinedDeals =
+    shoes &&
+    shoes
+      .map(chars => chars.replace('\n\n', '\n'))
+      .map(chars => chars.replace('\n', ''))
+      .join('');
 
-  const joinedDecks =
-    productNames && productNames.length > 2
-      ? [
-          productNames.slice(0, -2).join(', the '),
-          productNames.slice(-2).join(', and the '),
-        ].join(', the ')
-      : productNames && productNames.join(' and the ');
+  const subjectLine = `Cowtown's got ${shoes.length} deals!`;
 
   const msg = {
     from: process.env.EMAIL,
     to: process.env.EMAIL,
-    subject: 'Update on Twintails',
-    text: `Cowtown's got the  ${joinedDecks}!!!`,
+    subject: subjectLine,
+    text: `${joinedDeals}`,
   };
-  productNames.length && sgMail.send(msg);
+  shoes.length && sgMail.send(msg);
+  console.log(`${subjectLine}\n\n\n${joinedDeals}`);
 };
 
 const job = schedule.scheduleJob('0 1 * * *', () => {
