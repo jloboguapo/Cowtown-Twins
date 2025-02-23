@@ -1,12 +1,18 @@
-import sgMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
+import FormData from 'form-data';
 import jsdom from 'jsdom';
+import Mailgun from 'mailgun.js';
 import fetch from 'node-fetch';
-import schedule from 'node-schedule';
+// import schedule from 'node-schedule';
 
 dotenv.config();
 const { JSDOM } = jsdom;
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const mailgun = new Mailgun(FormData);
+const mg = mailgun.client({
+  username: 'api',
+  key: process.env.API_KEY,
+});
+const email = process.env.EMAIL;
 
 const callMyCowtownBoys = async () => {
   const response = await fetch(
@@ -31,18 +37,19 @@ const callMyCowtownBoys = async () => {
       .map(chars => chars.replace('\n', ''))
       .join('');
 
-  const subjectLine = `Cowtown's got ${shoes.length} deals!`;
+  const subjectLine = `Cowtown's got ${shoes.length} ${
+    shoes.length === 1 ? 'deal!' : 'deals!'
+  }`;
 
   const msg = {
-    from: process.env.EMAIL,
-    to: process.env.EMAIL,
+    from: email,
+    to: email,
     subject: subjectLine,
-    text: `${joinedDeals}`,
+    text: joinedDeals,
   };
-  shoes.length && sgMail.send(msg);
-  console.log(`${subjectLine}\n\n\n${joinedDeals}`);
+  shoes.length && mg.messages.create(process.env.DOMAIN, msg);
 };
 
-const job = schedule.scheduleJob('0 1 * * *', () => {
-  callMyCowtownBoys();
-});
+// const job = schedule.scheduleJob('0 1 * * *', () => {});
+
+callMyCowtownBoys();
