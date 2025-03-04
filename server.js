@@ -3,7 +3,7 @@ import FormData from 'form-data';
 import jsdom from 'jsdom';
 import Mailgun from 'mailgun.js';
 import fetch from 'node-fetch';
-// import schedule from 'node-schedule';
+import schedule from 'node-schedule';
 
 dotenv.config();
 const { JSDOM } = jsdom;
@@ -50,6 +50,8 @@ const callMyCowtownBoys = async () => {
   shoes.length && mg.messages.create(process.env.DOMAIN, msg);
 };
 
-// const job = schedule.scheduleJob('0 1 * * *', () => {});
+const job = schedule.scheduleJob('* */4 * * *', () => {
+  callMyCowtownBoys();
+});
 
 callMyCowtownBoys();
