@@ -1,12 +1,17 @@
-import sgMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
 import jsdom from 'jsdom';
+import Mailgun from 'mailgun.js';
 import fetch from 'node-fetch';
 import schedule from 'node-schedule';
 
 dotenv.config();
 const { JSDOM } = jsdom;
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const mailgun = new Mailgun(FormData);
+const mg = mailgun.client({
+  username: 'api',
+  key: process.env.API_KEY,
+});
+const email = process.env.EMAIL;
 
 const callMyCowtownBoys = async () => {
   const response = await fetch(
@@ -18,6 +23,7 @@ const callMyCowtownBoys = async () => {
   const getProductNames = shortnames =>
     Array.from(dom.window.document.querySelectorAll('.product-shortname'))
       .filter(name => name.innerHTML.toLowerCase().includes(shortnames))
+      .filter(name => name.innerHTML.includes(8.5))
       .map(name => name.innerHTML);
 
   const productNamesIncludingTwin = getProductNames('twin');
@@ -36,14 +42,16 @@ const callMyCowtownBoys = async () => {
       : productNames && productNames.join(' and the ');
 
   const msg = {
-    from: process.env.EMAIL,
-    to: process.env.EMAIL,
+    from: email,
+    to: email,
     subject: 'Update on Twintails',
     text: `Cowtown's got the  ${joinedDecks}!!!`,
   };
-  productNames.length && sgMail.send(msg);
+  joinedDecks.length && mg.messages.create(process.env.DOMAIN, msg);
 };
 
 const job = schedule.scheduleJob('0 /4 * * *', () => {
   callMyCowtownBoys();
 });
+
+callMyCowtownBoys();
