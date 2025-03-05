@@ -44,6 +44,6 @@ const callMyCowtownBoys = async () => {
   productNames.length && sgMail.send(msg);
 };
 
-const job = schedule.scheduleJob('0 1 * * *', () => {
+const job = schedule.scheduleJob('0 /4 * * *', () => {
   callMyCowtownBoys();
 });
