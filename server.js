@@ -50,7 +50,7 @@ const callMyCowtownBoys = async () => {
   shoes.length && mg.messages.create(process.env.DOMAIN, msg);
 };
 
-const job = schedule.scheduleJob('* */4 * * *', () => {
+const job = schedule.scheduleJob('0 */4 * * *', () => {
   callMyCowtownBoys();
 });
 
